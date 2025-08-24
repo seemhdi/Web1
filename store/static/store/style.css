@@ -1,0 +1,42 @@
+/* Based on the Design Document */
+
+:root {
+    --primary-color: #1a365d; /* آبی تیره */
+    --secondary-color: #ed8936; /* نارنجی */
+    --background-color: #f7fafc; /* خاکستری روشن */
+    --text-color: #2d3748; /* خاکستری تیره */
+    --success-color: #38a169; /* سبز */
+    --danger-color: #e53e3e; /* قرمز */
+    --base-spacing: 8px;
+}
+
+body {
+    font-family: "Vazir", "Shabnam", sans-serif; /* Assuming Vazir or Shabnam will be used */
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+    padding: calc(var(--base-spacing) * 2);
+}
+
+h1, h2, h3 {
+    color: var(--primary-color);
+}
+
+a {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.product-card {
+    border: 1px solid #e2e8f0;
+    background-color: #fff;
+    padding: calc(var(--base-spacing) * 2);
+    margin-bottom: calc(var(--base-spacing) * 2);
+    border-radius: var(--base-spacing);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}

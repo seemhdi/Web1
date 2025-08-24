@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }}</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+<body>
+    <header>
+        <a href="{% url 'home' %}">بازگشت به خانه</a>
+    </header>
+    <main>
+        <h1>{{ product.name }}</h1>
+        <p><strong>قیمت:</strong> {{ product.price }} تومان</p>
+        <p><strong>توضیحات:</strong> {{ product.description }}</p>
+        <img src="{{ product.image_url }}" alt="{{ product.name }}" width="300">
+    </main>
+</body>
+</html>
