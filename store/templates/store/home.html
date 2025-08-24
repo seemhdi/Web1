@@ -1,27 +1,22 @@
+{% extends "store/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فروشگاه محصولات دیجیتال</title>
-    <link rel="stylesheet" href="{% static 'store/style.css' %}">
-</head>
-<body>
+
+{% block title %}
+صفحه اصلی
+{% endblock %}
+
+{% block content %}
     <header>
         <h1>محصولات ما</h1>
     </header>
-    <main>
-        <div>
-            {% for product in products %}
-                <div class="product-card">
-                    <h2><a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a></h2>
-                    <p>{{ product.price }} تومان</p>
-                </div>
-            {% empty %}
-                <p>محصولی برای نمایش وجود ندارد.</p>
-            {% endfor %}
-        </div>
-    </main>
-</body>
-</html>
+    <div>
+        {% for product in products %}
+            <div class="product-card">
+                <h2><a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a></h2>
+                <p>{{ product.price }} تومان</p>
+            </div>
+        {% empty %}
+            <p>محصولی برای نمایش وجود ندارد.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

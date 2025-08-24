@@ -1,0 +1,51 @@
+{% extends "store/base.html" %}
+{% load static %}
+
+{% block title %}
+سبد خرید شما
+{% endblock %}
+
+{% block content %}
+<h1>سبد خرید شما</h1>
+<table class="cart-table">
+    <thead>
+        <tr>
+            <th>محصول</th>
+            <th>تعداد</th>
+            <th>حذف</th>
+            <th>قیمت واحد</th>
+            <th>قیمت کل</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>
+                    <form action="{% url 'remove_from_cart' item.product.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="button-danger">حذف</button>
+                    </form>
+                </td>
+                <td>{{ item.price }} تومان</td>
+                <td>{{ item.total_price }} تومان</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">سبد خرید شما خالی است.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr class="total">
+            <td colspan="4">جمع کل</td>
+            <td colspan="1">{{ cart.get_total_price }} تومان</td>
+        </tr>
+    </tfoot>
+</table>
+<p>
+    <a href="{% url 'home' %}" class="button">ادامه خرید</a>
+    <a href="#" class="button button-primary">ادامه جهت تسویه حساب</a>
+</p>
+{% endblock %}
