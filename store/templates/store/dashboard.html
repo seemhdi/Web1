@@ -1,0 +1,13 @@
+{% extends "store/base.html" %}
+
+{% block title %}داشبورد{% endblock %}
+
+{% block content %}
+  <h1>داشبورد</h1>
+  <p>خوش آمدید, {{ user.username }}!</p>
+  <p>اینجا داشبورد شماست. در آینده، تاریخچه سفارشات شما در اینجا نمایش داده خواهد شد.</p>
+  <ul>
+    <li><a href="{% url 'logout' %}">خروج</a></li>
+    <li><a href="{% url 'password_change' %}">تغییر رمز عبور</a></li>
+  </ul>
+{% endblock %}

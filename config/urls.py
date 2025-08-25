@@ -18,7 +18,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from store import views as store_views
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # I'm defining the login url manually to use my custom view, but keeping the rest of the auth urls
+    path("accounts/login/", store_views.CustomLoginView.as_view(), name="login"),
+    path("accounts/", include("django.contrib.auth.urls")),
     path("", include("store.urls")),
 ]
