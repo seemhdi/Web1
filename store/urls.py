@@ -14,4 +14,8 @@ urlpatterns = [
     # Auth URLs
     path('signup/', views.SignUpView.as_view(), name='signup'),
     path('dashboard/', views.dashboard, name='dashboard'),
+
+    # Checkout URLs
+    path('checkout/', views.checkout, name='checkout'),
+    path('order_complete/', views.order_complete, name='order_complete'),
 ]

@@ -1,0 +1,9 @@
+{% extends 'store/base.html' %}
+
+{% block title %}سفارش شما تکمیل شد{% endblock %}
+
+{% block content %}
+  <h1>از خرید شما متشکریم</h1>
+  <p>سفارش شما با موفقیت ثبت شد. لینک‌های دانلود به ایمیل شما ارسال خواهد شد.</p>
+  <p><a href="{% url 'home' %}" class="button">بازگشت به صفحه اصلی</a></p>
+{% endblock %}

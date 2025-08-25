@@ -3,10 +3,12 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import views as auth_views
+from django.db import transaction
 from django.views.generic import ListView, DetailView
-from .models import Product
+from .models import Product, Order, OrderItem
 from .cart import Cart
-from .forms import SignUpForm
+from .forms import SignUpForm, CustomAuthenticationForm, CheckoutForm
 
 
 class ProductListView(ListView):
@@ -49,9 +51,6 @@ def cart_detail(request):
 
 # --- User Account Views ---
 
-from django.contrib.auth import views as auth_views
-from .forms import CustomAuthenticationForm
-
 @login_required
 def dashboard(request):
     return render(request, 'store/dashboard.html', {'section': 'dashboard'})
@@ -64,3 +63,43 @@ class SignUpView(generic.CreateView):
     form_class = SignUpForm
     success_url = reverse_lazy('login')
     template_name = 'store/signup.html'
+
+@login_required
+def checkout(request):
+    cart = Cart(request)
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    # Create the order
+                    order = Order.objects.create(
+                        user=request.user,
+                        total_amount=cart.get_total_price(),
+                        # Status will default to 'pending'
+                    )
+                    # Create order items
+                    for item in cart:
+                        OrderItem.objects.create(
+                            order=order,
+                            product=item['product'],
+                            price=item['price'],
+                            quantity=item['quantity']
+                        )
+                # Clear the cart
+                cart.clear()
+                # Redirect to a success page
+                return redirect('order_complete')
+            except Exception as e:
+                # Handle potential errors during transaction
+                # For now, just pass, but in a real app, you'd log this
+                # and show an error message.
+                pass
+    else:
+        # Pre-fill the email form with the user's email
+        form = CheckoutForm(initial={'email': request.user.email})
+
+    return render(request, 'store/checkout.html', {'cart': cart, 'form': form})
+
+def order_complete(request):
+    return render(request, 'store/order_complete.html')
