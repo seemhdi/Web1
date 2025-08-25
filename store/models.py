@@ -33,6 +33,11 @@ class Product(models.Model):
     status = models.CharField(max_length=10, choices=status_choices, default='active')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # Fields for code-based products
+    is_code_product = models.BooleanField(default=False)
+    demo_video = models.FileField(upload_to='products/videos/', blank=True, null=True)
+    source_file = models.FileField(upload_to='products/source/', blank=True, null=True)
+
     def __str__(self):
         return self.name
 

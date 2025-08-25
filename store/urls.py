@@ -24,4 +24,7 @@ urlpatterns = [
     path('about/', views.AboutView.as_view(), name='about'),
     path('contact/', views.ContactView.as_view(), name='contact'),
     path('legal/', views.LegalView.as_view(), name='legal'),
+
+    # Secure Download URL
+    path('download/<int:product_id>/', views.download_product, name='download_product'),
 ]

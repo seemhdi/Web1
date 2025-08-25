@@ -1,0 +1,111 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block extra_head %}
+    <meta name="description" content="{{ product.description|truncatewords:25 }}">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "{{ product.name }}",
+      "description": "{{ product.description }}",
+      "offers": {
+        "@type": "Offer",
+        "url": "{{ request.build_absolute_uri }}",
+        "priceCurrency": "IRT",
+        "price": "{{ product.price }}"
+      }
+    }
+    </script>
+{% endblock %}
+
+{% block content %}
+<style>
+    /* Scoped styles for this template */
+    .product-hero {
+        text-align: center;
+        padding: 2rem 0;
+    }
+    .product-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    @media (min-width: 768px) {
+        .product-layout {
+            grid-template-columns: 2fr 1fr;
+        }
+    }
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 */
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+        background: #000;
+        border-radius: var(--border-radius);
+    }
+    .video-container video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .product-actions {
+        background: var(--white-color);
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .product-description {
+        margin-top: 2rem;
+    }
+</style>
+
+<div class="product-hero">
+    <h1>{{ product.name }}</h1>
+    <p>{{ product.description|truncatewords:30 }}</p>
+</div>
+
+<div class="product-layout">
+    <div class="product-media">
+        <h2>پیش‌نمایش ویدئویی</h2>
+        {% if product.demo_video %}
+        <div class="video-container">
+            <video controls>
+                <source src="{{ product.demo_video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        {% else %}
+        <p>ویدیوی پیش‌نمایش موجود نیست.</p>
+        {% endif %}
+    </div>
+
+    <div class="product-actions">
+        <h2>خرید محصول</h2>
+        <p><strong>قیمت:</strong> {{ product.price }} تومان</p>
+        <form action="{% url 'add_to_cart' product.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="quantity" value="1">
+            <button type="submit" class="button button-primary" style="width: 100%;">افزودن به سبد خرید</button>
+        </form>
+    </div>
+</div>
+
+<div class="product-description">
+    <h2>توضیحات کامل</h2>
+    <p>{{ product.description }}</p>
+
+    <h3>ویژگی‌ها</h3>
+    <ul>
+        <li>انیمیشن‌های روان و جذاب</li>
+        <li>کدنویسی تمیز و قابل فهم</li>
+        <li>طراحی کاملا واکنش‌گرا</li>
+    </ul>
+</div>
+{% endblock %}

@@ -21,9 +21,18 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     """Admin view for Products."""
-    list_display = ('name', 'category', 'price', 'status')
-    list_filter = ('category', 'status')
+    list_display = ('name', 'category', 'price', 'status', 'is_code_product')
+    list_filter = ('category', 'status', 'is_code_product')
     search_fields = ('name', 'description')
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'description', 'price', 'category', 'status')
+        }),
+        ('Code Product Options', {
+            'classes': ('collapse',),
+            'fields': ('is_code_product', 'demo_video', 'source_file'),
+        }),
+    )
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):

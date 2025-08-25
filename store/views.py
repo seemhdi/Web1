@@ -3,6 +3,8 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, Http404
+import os
 from django.contrib.auth import views as auth_views
 from django.db import transaction
 from django.views.generic import ListView, DetailView
@@ -44,8 +46,12 @@ class ProductListView(ListView):
 class ProductDetailView(DetailView):
     """View to display the details of a single product."""
     model = Product
-    template_name = 'store/product_detail.html'
     context_object_name = 'product'
+
+    def get_template_names(self):
+        if self.object.is_code_product:
+            return ['store/code_product_detail.html']
+        return ['store/product_detail.html']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -177,3 +183,25 @@ class ContactView(generic.TemplateView):
 
 class LegalView(generic.TemplateView):
     template_name = "store/legal.html"
+
+@login_required
+def download_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id, is_code_product=True)
+
+    # Check if the user has a completed order for this product
+    has_purchased = Order.objects.filter(
+        user=request.user,
+        status='completed',
+        items__product=product
+    ).exists()
+
+    if not has_purchased:
+        raise Http404("You have not purchased this item or the order is not complete.")
+
+    file_path = product.source_file.path
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/zip")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404("File not found.")
