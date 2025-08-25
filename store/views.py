@@ -6,9 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
 from django.db import transaction
 from django.views.generic import ListView, DetailView
-from .models import Product, Order, OrderItem, Category
+from .models import Product, Order, OrderItem, Category, Review
 from .cart import Cart
-from .forms import SignUpForm, CustomAuthenticationForm, CheckoutForm
+from .forms import SignUpForm, CustomAuthenticationForm, CheckoutForm, ReviewForm
 
 
 class ProductListView(ListView):
@@ -46,6 +46,30 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = 'store/product_detail.html'
     context_object_name = 'product'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reviews'] = self.object.reviews.all()
+        if self.request.user.is_authenticated:
+            context['review_form'] = ReviewForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.product = self.object
+            review.user = request.user
+            review.save()
+            return redirect('product_detail', pk=self.object.pk)
+
+        context = self.get_context_data()
+        context['review_form'] = form # Show form with errors
+        return self.render_to_response(context)
 
 # --- Cart Views ---
 
@@ -110,10 +134,9 @@ def checkout(request):
                             price=item['price'],
                             quantity=item['quantity']
                         )
-                # Clear the cart
-                cart.clear()
-                # Redirect to a success page
-                return redirect('order_complete')
+                # Don't clear the cart yet. Clear it after successful "payment".
+                # Redirect to the payment simulation page
+                return redirect('payment_simulation')
             except Exception as e:
                 # Handle potential errors during transaction
                 # For now, just pass, but in a real app, you'd log this
@@ -127,3 +150,30 @@ def checkout(request):
 
 def order_complete(request):
     return render(request, 'store/order_complete.html')
+
+@login_required
+def payment_simulation(request):
+    cart = Cart(request)
+    # In a real app, the order would be passed via URL or session
+    # For this simulation, we'll just get the user's most recent pending order.
+    order = request.user.orders.filter(status='pending').order_by('-created_at').first()
+
+    if request.method == 'POST':
+        if order:
+            order.status = 'completed'
+            # In a real app, you would also link a payment ID here.
+            order.save()
+            cart.clear() # Clear the cart after successful "payment"
+            return redirect('order_complete')
+
+    return render(request, 'store/payment_simulation.html', {'order': order})
+
+# --- Static Pages ---
+class AboutView(generic.TemplateView):
+    template_name = "store/about.html"
+
+class ContactView(generic.TemplateView):
+    template_name = "store/contact.html"
+
+class LegalView(generic.TemplateView):
+    template_name = "store/legal.html"

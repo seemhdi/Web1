@@ -1,42 +1,176 @@
-/* Based on the Design Document */
+/* Main Stylesheet for the Digital Store */
 
 :root {
-    --primary-color: #1a365d; /* آبی تیره */
-    --secondary-color: #ed8936; /* نارنجی */
-    --background-color: #f7fafc; /* خاکستری روشن */
-    --text-color: #2d3748; /* خاکستری تیره */
-    --success-color: #38a169; /* سبز */
-    --danger-color: #e53e3e; /* قرمز */
+    --primary-color: #1a365d;
+    --secondary-color: #ed8936;
+    --background-color: #f7fafc;
+    --text-color: #2d3748;
+    --light-gray-color: #e2e8f0;
+    --white-color: #ffffff;
+    --success-color: #38a169;
+    --danger-color: #e53e3e;
     --base-spacing: 8px;
+    --font-family: "Vazir", "Shabnam", sans-serif;
+    --border-radius: 4px;
+    --transition-speed: 0.3s;
 }
 
+/* --- General --- */
 body {
-    font-family: "Vazir", "Shabnam", sans-serif; /* Assuming Vazir or Shabnam will be used */
+    font-family: var(--font-family);
     background-color: var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
     margin: 0;
-    padding: calc(var(--base-spacing) * 2);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: calc(var(--base-spacing) * 3);
+}
+
+a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: color var(--transition-speed) ease;
+}
+
+a:hover {
+    color: var(--primary-color);
 }
 
 h1, h2, h3 {
     color: var(--primary-color);
 }
 
-a {
-    color: var(--secondary-color);
-    text-decoration: none;
+hr {
+    border: none;
+    border-top: 1px solid var(--light-gray-color);
+    margin: calc(var(--base-spacing) * 4) 0;
 }
 
-a:hover {
-    text-decoration: underline;
+/* --- Header --- */
+.main-header {
+    background: var(--white-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: var(--base-spacing) calc(var(--base-spacing) * 3);
 }
 
+.main-header nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.main-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.main-header .user-nav a, .main-header .cart-summary a {
+    margin-left: var(--base-spacing);
+    transition: color var(--transition-speed) ease;
+}
+
+/* --- Footer --- */
+.main-footer {
+    background: var(--primary-color);
+    color: var(--background-color);
+    padding: calc(var(--base-spacing) * 3);
+    margin-top: calc(var(--base-spacing) * 4);
+    text-align: center;
+}
+
+.main-footer a {
+    color: var(--white-color);
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--base-spacing);
+    display: flex;
+    justify-content: center;
+    gap: calc(var(--base-spacing) * 2);
+}
+
+/* --- Buttons --- */
+.button, button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+}
+
+.button-primary, button[type="submit"] {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+}
+
+.button-primary:hover, button[type="submit"]:hover {
+    background-color: #c56d1b; /* Darker orange */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.button-danger {
+    background-color: var(--danger-color);
+    color: var(--white-color);
+}
+.button-danger:hover {
+    background-color: #c53030; /* Darker red */
+}
+
+/* --- Forms --- */
+form .form-group {
+    margin-bottom: 1.5rem;
+}
+form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="number"],
+form select,
+form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--light-gray-color);
+    border-radius: var(--border-radius);
+    transition: all var(--transition-speed) ease;
+    box-sizing: border-box;
+}
+
+form input:focus, form select:focus, form textarea:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 5px rgba(237, 137, 54, 0.5);
+}
+
+/* --- Product Card --- */
 .product-card {
-    border: 1px solid #e2e8f0;
-    background-color: #fff;
+    border: 1px solid var(--light-gray-color);
+    background-color: var(--white-color);
     padding: calc(var(--base-spacing) * 2);
-    margin-bottom: calc(var(--base-spacing) * 2);
-    border-radius: var(--base-spacing);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+.product-card h2 {
+    font-size: 1.2rem;
+    margin-top: 0;
 }

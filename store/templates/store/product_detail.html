@@ -19,4 +19,32 @@
 
     <br>
     <img src="{{ product.image_url }}" alt="{{ product.name }}" width="300">
+
+    <hr>
+
+    <div class="reviews-section">
+        <h2>نظرات کاربران</h2>
+        {% if user.is_authenticated %}
+            <h3>نظر خود را ثبت کنید</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ review_form.as_p }}
+                <button type="submit">ثبت نظر</button>
+            </form>
+        {% else %}
+            <p>برای ثبت نظر باید <a href="{% url 'login' %}">وارد شوید</a>.</p>
+        {% endif %}
+
+        <div class="review-list">
+            {% for review in reviews %}
+                <div class="review">
+                    <p><strong>{{ review.user.username }}</strong> - امتیاز: {{ review.rating }}/5</p>
+                    <p>{{ review.comment }}</p>
+                    <small>{{ review.created_at|date:"Y-m-d" }}</small>
+                </div>
+            {% empty %}
+                <p>هنوز نظری برای این محصول ثبت نشده است.</p>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

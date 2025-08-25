@@ -34,8 +34,15 @@
         {% endblock %}
     </main>
 
-    <footer>
-        <p>&copy; 2024 فروشگاه محصولات دیجیتال</p>
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2024 فروشگاه محصولات دیجیتال. تمام حقوق محفوظ است.</p>
+            <ul class="footer-links">
+                <li><a href="{% url 'about' %}">درباره ما</a></li>
+                <li><a href="{% url 'contact' %}">تماس با ما</a></li>
+                <li><a href="{% url 'legal' %}">قوانین</a></li>
+            </ul>
+        </div>
     </footer>
 </body>
 </html>

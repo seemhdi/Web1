@@ -62,3 +62,18 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} in Order {self.order.id}"
+
+class Review(models.Model):
+    """Model for product reviews."""
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+    rating = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 6)]) # 1 to 5 stars
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('product', 'user') # Each user can only review a product once
+        ordering = ('-created_at',)
+
+    def __str__(self):
+        return f'Review by {self.user.username} for {self.product.name}'

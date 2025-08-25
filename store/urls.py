@@ -17,5 +17,11 @@ urlpatterns = [
 
     # Checkout URLs
     path('checkout/', views.checkout, name='checkout'),
+    path('payment/', views.payment_simulation, name='payment_simulation'),
     path('order_complete/', views.order_complete, name='order_complete'),
+
+    # Static Page URLs
+    path('about/', views.AboutView.as_view(), name='about'),
+    path('contact/', views.ContactView.as_view(), name='contact'),
+    path('legal/', views.LegalView.as_view(), name='legal'),
 ]

@@ -1,0 +1,19 @@
+{% extends 'store/base.html' %}
+
+{% block title %}شبیه‌سازی پرداخت{% endblock %}
+
+{% block content %}
+  <h1>شبیه‌سازی درگاه پرداخت</h1>
+
+  {% if order %}
+    <p>شما در حال پرداخت برای سفارش شماره {{ order.id }} به مبلغ {{ order.total_amount }} تومان هستید.</p>
+    <p>در یک برنامه واقعی، شما به یک صفحه پرداخت امن منتقل می‌شوید.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="checkout-button">پرداخت موفق را شبیه‌سازی کن</button>
+    </form>
+  {% else %}
+    <p>سفارش معتبری برای پرداخت یافت نشد.</p>
+  {% endif %}
+{% endblock %}
