@@ -2,21 +2,53 @@
 {% load static %}
 
 {% block title %}
-صفحه اصلی
+محصولات
 {% endblock %}
 
 {% block content %}
-    <header>
-        <h1>محصولات ما</h1>
-    </header>
-    <div>
-        {% for product in products %}
-            <div class="product-card">
-                <h2><a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a></h2>
-                <p>{{ product.price }} تومان</p>
-            </div>
-        {% empty %}
-            <p>محصولی برای نمایش وجود ندارد.</p>
-        {% endfor %}
+<link rel="stylesheet" href="{% static 'store/css/product_list.css' %}">
+
+<div class="product-page-container">
+    <aside class="sidebar">
+        <h3>دسته‌بندی‌ها</h3>
+        <ul class="category-filters">
+            <li>
+                <a href="{% url 'home' %}" class="{% if not current_category %}active{% endif %}">همه</a>
+            </li>
+            {% for c in categories %}
+            <li>
+                <a href="?category={{ c.slug }}" class="{% if current_category == c.slug %}active{% endif %}">
+                    {{ c.name }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <div class="main-content">
+        <div class="sort-controls">
+            <form method="get" action="{% url 'home' %}">
+                <input type="hidden" name="category" value="{{ current_category }}">
+                <select name="sort" onchange="this.form.submit()">
+                    <option value="">مرتب‌سازی پیش‌فرض</option>
+                    <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>قیمت: از کم به زیاد</option>
+                    <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>قیمت: از زیاد به کم</option>
+                    <option value="date_desc" {% if current_sort == 'date_desc' %}selected{% endif %}>جدیدترین</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    <h2><a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a></h2>
+                    <p>{{ product.price }} تومان</p>
+                    <a href="{% url 'product_detail' product.pk %}" class="button">مشاهده جزئیات</a>
+                </div>
+            {% empty %}
+                <p>محصولی برای نمایش با این فیلترها وجود ندارد.</p>
+            {% endfor %}
+        </div>
     </div>
+</div>
 {% endblock %}

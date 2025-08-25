@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
 from django.db import transaction
 from django.views.generic import ListView, DetailView
-from .models import Product, Order, OrderItem
+from .models import Product, Order, OrderItem, Category
 from .cart import Cart
 from .forms import SignUpForm, CustomAuthenticationForm, CheckoutForm
 
@@ -16,6 +16,30 @@ class ProductListView(ListView):
     model = Product
     template_name = 'store/home.html'
     context_object_name = 'products'
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(status='active')
+        category_slug = self.request.GET.get('category')
+        sort_by = self.request.GET.get('sort')
+
+        if category_slug:
+            queryset = queryset.filter(category__slug=category_slug)
+
+        if sort_by == 'price_asc':
+            queryset = queryset.order_by('price')
+        elif sort_by == 'price_desc':
+            queryset = queryset.order_by('-price')
+        elif sort_by == 'date_desc':
+            queryset = queryset.order_by('-created_at')
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.filter(parent=None) # Top-level categories
+        context['current_category'] = self.request.GET.get('category', '')
+        context['current_sort'] = self.request.GET.get('sort', '')
+        return context
 
 class ProductDetailView(DetailView):
     """View to display the details of a single product."""
